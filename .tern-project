@@ -1,0 +1,17 @@
+{
+  "libs":[
+    "browser",
+    "ecmascript",
+    "underscore"
+  ],
+  "plugins": {
+    "angular": {},
+    "commonjs": {},
+    "doc_comment": {},
+    "es_modules": {},
+    "modules": {},
+    "node":{},
+    "node_resolve": {},
+    "complete_strings": {}
+  }
+}

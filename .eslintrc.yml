@@ -1,0 +1,4 @@
+extends: 'standard'
+rules:
+  space-before-function-paren: 0
+  no-multiple-empty-lines: [2, { 'max': 2 }]

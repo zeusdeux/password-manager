@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "ava test/ --verbose",
-    "start": "electron ."
+    "start": "electron .",
+    "lint": "eslint src/ test/ bin/"
   },
   "keywords": [
     "password",
@@ -19,5 +20,13 @@
   "license": "MIT",
   "dependencies": {
     "electron": "^1.6.10"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-node": "^5.0.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
   }
 }
