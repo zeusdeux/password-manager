@@ -1,4 +1,5 @@
 extends: 'standard'
 rules:
+  no-console: 2
   space-before-function-paren: 0
   no-multiple-empty-lines: [2, { 'max': 2 }]
