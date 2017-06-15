@@ -2,19 +2,19 @@
 
 const { promisify: p } = require('util')
 const exec = p(require('child_process').exec)
-const { db } = require('../../config')
+const d = require('debug')('decrypt')
 
-module.exports = (passphrase, inputFile = db) => {
+module.exports = inputFile => passphrase => {
   const cmd = [
     'gpg',
     '--batch',
     '--yes',
     `--passphrase '${passphrase}'`,
     '--decrypt',
-    db
+    inputFile
   ].join(' ')
 
-  console.log('decrypt command', cmd)
+  d('decrypt command', cmd)
 
   return exec(cmd).then(({ stdout }) => JSON.parse(stdout))
 }

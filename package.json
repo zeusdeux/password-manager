@@ -19,6 +19,7 @@
   "author": "Mudit Ameta",
   "license": "MIT",
   "dependencies": {
+    "debug": "^2.6.8",
     "electron": "^1.6.10"
   },
   "devDependencies": {
