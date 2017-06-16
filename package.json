@@ -6,7 +6,9 @@
   "scripts": {
     "test": "ava test/ --verbose",
     "start": "electron .",
-    "lint": "eslint src/ test/ bin/"
+    "lint": "eslint src/ test/ bin/",
+    "bundle": "webpack --progress",
+    "bundle-watch": "webpack --progress --watch"
   },
   "keywords": [
     "password",
@@ -20,14 +22,25 @@
   "license": "MIT",
   "dependencies": {
     "debug": "^2.6.8",
-    "electron": "^1.6.10"
+    "electron": "^1.6.10",
+    "normalize.css": "^7.0.0",
+    "preact": "^8.1.0"
   },
   "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.0.0",
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-react": "^6.24.1",
+    "babel-register": "^6.24.1",
+    "css-loader": "^0.28.4",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-node": "^5.0.0",
     "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "file-loader": "^0.11.2",
+    "style-loader": "^0.18.2",
+    "webpack": "^2.6.1"
   }
 }
