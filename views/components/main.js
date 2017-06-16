@@ -10,20 +10,18 @@ const d = debug('main')
 export default class extends Component {
   constructor() {
     super()
-    this.state.db = [] // use getAll from model here
-    this.state.passphrase = ''
+    this.state.db = null // use getAll from model here
     this.state.app = null // get should update this
     this.state.error = {} // errors from actions should be here
 
-    ipcRenderer.on('init-response', (_event, res) => {
-      if (res.error) {
+    ipcRenderer.on('init-response', (_event, error) => {
+      if (error) {
         this.setState({
-          error: res.error
+          error: error
         })
       } else {
         ipcRenderer.send('db-op', { op: 'getAll' })
         this.setState({
-          passphrase: res.passphrase,
           error: {}
         })
       }
@@ -90,9 +88,9 @@ export default class extends Component {
       <main>
         <ErrorBar error={this.state.error.message} />
         <Deets app={this.state.app} />
-        <PassphraseModal shouldShow={!this.state.passphrase} set={this.setPassphrase.bind(this)} />
-        <section style={{display: !this.state.passphrase ? 'none' : 'block'}}>
-          <Header style={{display: 'none'}} db={this.state.db} />
+        <PassphraseModal shouldShow={!this.state.db} set={this.setPassphrase.bind(this)} />
+        <section>
+          <Header db={this.state.db} />
           <Body
             db={this.state.db}
             get={this.get.bind(this)}
