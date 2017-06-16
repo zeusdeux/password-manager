@@ -5,34 +5,38 @@ export default class extends Component {
     super()
     this.state.show = false
   }
+  handleChange(key, e) {
+    this.setState({
+      [key]: e.target.value
+    })
+  }
   toggleShow() {
     this.setState({
       show: !this.state.show
     })
   }
+  clearState() {
+    this.setState({
+      appName: '',
+      username: '',
+      password: '',
+      show: false
+    })
+  }
   handleSubmit(e) {
     e.preventDefault()
 
-    const { appName, username, password } =
-          Array
-          .from(e.target.children)
-          .reduce((arr, el) => {
-            if (el.nodeName === 'INPUT') {
-              arr[el.name] = el.value
-            }
-            return arr
-          }, {})
-    this.props.add(appName, username, password)
-    this.toggleShow()
+    this.props.add(this.state.appName, this.state.username, this.state.password)
+    this.clearState()
   }
   render() {
     return (
       <section>
         <div style={{display: this.state.show ? 'block' : 'none'}}>
           <form onSubmit={this.handleSubmit.bind(this)}>
-            <input name='appName' placeholder='Enter app name' />
-            <input name='username' placeholder='Enter app username' />
-            <input name='password' placeholder='Enter app password' />
+            <input name='appName' placeholder='Enter app name' value={this.state.appName} onChange={this.handleChange.bind(this, 'appName')} />
+            <input name='username' placeholder='Enter app username' value={this.state.username} onChange={this.handleChange.bind(this, 'username')} />
+            <input name='password' placeholder='Enter app password' value={this.state.password} onChange={this.handleChange.bind(this, 'password')} />
             <button type='submit'>Save</button>
           </form>
         </div>

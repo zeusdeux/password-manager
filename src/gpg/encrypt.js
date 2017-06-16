@@ -8,6 +8,8 @@ module.exports = outputFile => (payload, passphrase) => {
   // assume ~/.mypass folder exists
   // TODO: This folder should be created the first time this
   // app is used
+  const escapedPayload =
+        JSON.stringify(payload).replace(/'/g, `\\'`)
   const cmd = [
     'gpg',
     '--batch',
@@ -16,7 +18,7 @@ module.exports = outputFile => (payload, passphrase) => {
     `--output ${outputFile}`,
     '--symmetric',
     '<<<',
-    `$'${JSON.stringify(payload).replace(/'/g, `\\'`)}'`
+    `$'${escapedPayload}'`
   ].join(' ')
 
   d('encrypt command', cmd)
