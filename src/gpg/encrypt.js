@@ -1,6 +1,6 @@
 'use strict'
 
-const { promisify: p } = require('util')
+const p = require('pify')
 const exec = p(require('child_process').exec)
 const d = require('debug')('encrypt')
 
@@ -16,7 +16,7 @@ module.exports = outputFile => (payload, passphrase) => {
     `--output ${outputFile}`,
     '--symmetric',
     '<<<',
-    `'${JSON.stringify(payload)}'`
+    `$'${JSON.stringify(payload).replace(/'/g, `\\'`)}'`
   ].join(' ')
 
   d('encrypt command', cmd)

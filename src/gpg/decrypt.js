@@ -1,10 +1,10 @@
 'use strict'
 
-const { promisify: p } = require('util')
+const p = require('pify')
 const exec = p(require('child_process').exec)
 const d = require('debug')('decrypt')
 
-module.exports = inputFile => passphrase => {
+module.exports = inputFile => async passphrase => {
   const cmd = [
     'gpg',
     '--batch',
@@ -16,5 +16,9 @@ module.exports = inputFile => passphrase => {
 
   d('decrypt command', cmd)
 
-  return exec(cmd).then(({ stdout }) => JSON.parse(stdout))
+  try {
+    return JSON.parse(await exec(cmd))
+  } catch (error) {
+    throw error
+  }
 }

@@ -8,8 +8,8 @@ const { db: { dir, file } } = require('../../config')
 const defaultDbPath = resolve(dir, file)
 
 // TODO: Create db path if it doesn't exist
-const { promisify } = require('util')
-const stat = promisify(require('fs').stat)
+const p = require('pify')
+const stat = p(require('fs').stat)
 
 // type Name = String
 // type Username = String
@@ -50,6 +50,7 @@ const search = db => query => {
 const add = (db, commit) => (name, username, password) => {
   const id = db.push({ name, username, password }) - 1
 
+  d('In add', db)
   return commit(db).then(_ => {
     return { id, name }
   })
@@ -96,9 +97,13 @@ async function init(passphrase, dbPath = defaultDbPath) {
     }
   } catch (e) {
     /* eslint no-console: 0 */
+    if (e.code === 'ENOENT' && e.syscall === 'stat') {
+      e.message = `No db found. Please create the file at ${defaultDbPath}`
+    } else if (e.cmd) {
+      e.message = 'Incorrect passphrase. Please try again'
+    }
     console.error(e)
-    console.error(`Please create the file at ${defaultDbPath}`)
-    process.exit(1)
+    throw e
   }
 }
 
