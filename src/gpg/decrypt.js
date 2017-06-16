@@ -5,11 +5,13 @@ const exec = p(require('child_process').exec)
 const d = require('debug')('decrypt')
 
 module.exports = inputFile => async passphrase => {
+  const escapedPassphrase =
+        JSON.stringify(passphrase).replace(/'/g, `\\'`)
   const cmd = [
     'gpg',
     '--batch',
     '--yes',
-    `--passphrase '${passphrase}'`,
+    `--passphrase $'${passphrase}'`,
     '--decrypt',
     inputFile
   ].join(' ')

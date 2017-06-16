@@ -10,11 +10,13 @@ module.exports = outputFile => (payload, passphrase) => {
   // app is used
   const escapedPayload =
         JSON.stringify(payload).replace(/'/g, `\\'`)
+  const escapedPassphrase =
+        JSON.stringify(passphrase).replace(/'/g, `\\'`)
   const cmd = [
     'gpg',
     '--batch',
     '--yes',
-    `--passphrase '${passphrase}'`,
+    `--passphrase $'${passphrase}'`,
     `--output ${outputFile}`,
     '--symmetric',
     '<<<',
