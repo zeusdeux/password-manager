@@ -6,6 +6,7 @@ const getEncrypter = require('../gpg/encrypt')
 const getDecrypter = require('../gpg/decrypt')
 const { db: { dir, file } } = require('../../config')
 const defaultDbPath = resolve(dir, file)
+const { search: ssearch, transforms: { rank, noHighlight } } = require('subsequence-search')
 
 // TODO: Create db path if it doesn't exist
 const p = require('pify')
@@ -20,7 +21,7 @@ const stat = p(require('fs').stat)
 // Db :: [(Name, Username, Password)]
 // id is the array index for the tuple
 
-// get :: () -> Promise [(Id, Name)]
+// getAll :: () -> Promise [(Id, Name)]
 const getAll = db => () => {
   try {
     return Promise.resolve(
@@ -38,12 +39,35 @@ const getAll = db => () => {
 
 // get :: Id -> Promise [(Id, Name, Username, Password)]
 const get = db => id => {
-  return Promise.resolve(db[id])
+  d('In get', id)
+  return Promise.resolve(Object.assign({ id }, db[id]))
 }
 
 // search :: Query -> Promise [(Id, Name)]
 const search = db => query => {
+  try {
+    d('In search', { query })
+    const data = {
+      data: db.map((app, id) => {
+        app.id = id
+        return app
+      }),
+      searchInProps: ['name']
+    }
+    const result = ssearch({
+      rank: rank('name'),
+      noHighlight,
+      pluck: ({ data }) => data.map(d => {
+        return { id: d.id, name: d.name }
+      })
+    }, data, query)
 
+    d('In search', { result })
+
+    return Promise.resolve(result)
+  } catch (error) {
+    return Promise.reject(error)
+  }
 }
 
 // add :: Name -> Username -> Password -> Promise (Maybe (Id, Name))
@@ -69,11 +93,11 @@ const update = (db, commit) => (id, name, username, password) => {
   })
 }
 
-// remove :: Id -> Promise Bool
+// remove :: Id -> Promise [(Id, Name)]
 const remove = (db, commit) => id => {
   db.splice(id, 1)
 
-  return commit(db).then(_ => true)
+  return commit(db).then(_ => getAll(db)())
 }
 
 async function init(passphrase, dbPath = defaultDbPath) {

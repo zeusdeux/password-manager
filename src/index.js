@@ -43,17 +43,17 @@ function createWindow() {
       case 'get':
         response = await db.get(payload.id)
         break
-      case 'search':
-        response = await db.search()
-        break
       case 'add':
         response = await db.add(payload.name, payload.username, payload.password)
+        break
+      case 'remove':
+        response = await db.remove(payload.id)
         break
       case 'update':
         response = await db.update(payload.id, payload.name, payload.username, payload.password)
         break
-      case 'remove':
-        response = await db.remove(payload.id)
+      case 'search':
+        response = await db.search(payload.query)
         break
       default: throw new Error(`${op} is not supported`)
       }

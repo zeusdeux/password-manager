@@ -25,7 +25,8 @@
     "electron": "^1.6.10",
     "normalize.css": "^7.0.0",
     "pify": "^3.0.0",
-    "preact": "^8.1.0"
+    "preact": "^8.1.0",
+    "subsequence-search": "^1.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",

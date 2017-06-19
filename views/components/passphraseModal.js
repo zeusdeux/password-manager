@@ -21,7 +21,7 @@ export default class extends Component {
     return (
       <div style={style(this.props.shouldShow)} >
         <form style={form} onSubmit={this.setPassphrase.bind(this)}>
-          <input placeholder='Enter your master passphrase' value={this.state.passphrase} onChange={this.handleChange.bind(this)} />
+          <input autoFocus type='text' placeholder='Enter your master passphrase' value={this.state.passphrase} onChange={this.handleChange.bind(this)} />
           <button>Unlock!</button>
         </form>
       </div>
