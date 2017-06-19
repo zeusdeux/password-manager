@@ -1,92 +1,60 @@
-import { ipcRenderer } from 'electron'
 import { h, Component } from 'preact'
 import Header from './header'
 import Body from './body'
 import PassphraseModal from './passphraseModal'
-import debug from 'debug'
+import mixinDbOps from './db'
 
-const d = debug('main')
-
-export default class extends Component {
+export default class extends mixinDbOps(Component) {
   constructor() {
     super()
     this.state.db = null // use getAll from model here
     this.state.app = null // get should update this
-    this.state.error = {} // errors from actions should be here
+    this.state.error = null // errors from actions should be here
 
-    ipcRenderer.on('init-response', (_event, error) => {
-      if (error) {
-        this.setState({
-          error: error
-        })
-      } else {
-        ipcRenderer.send('db-op', { op: 'getAll' })
-        this.setState({
-          error: {}
-        })
+    this.registerInitHandler(error => {
+      if (!error) {
+        this.getAll()
       }
+      this.setState({
+        error
+      })
     })
 
-    ipcRenderer.on('db-op-response', (_event, {op, response}) => {
-      switch (op) {
-      case 'getAll':
-        this.setState({
-          db: response
-        })
-        break
-      case 'get':
-        this.setState({
-          app: response
-        })
-        break
-      case 'add':
-        this.setState({
-          db: [...this.state.db, response]
-        })
-        break
-      default: d(op, response)
+    this.registerDbResponseHandler((error, { op, response }) => {
+      let state = {}
+
+      if (!error) {
+        switch (op) {
+        case 'getAll':
+          state = {
+            db: response
+          }
+          break
+        case 'get':
+          state = {
+            app: response
+          }
+          break
+        case 'add':
+          state = {
+            db: [...this.state.db, response]
+          }
+          break
+        default:
+          error = new Error(`${op} is not supported`)
+        }
       }
+      state.error = error
+      this.setState(state)
     })
   }
   setPassphrase(newPassphrase) {
-    // call model.getAll with new passphrase
-    // update db and passphrase here if
-    // returned promise resolves
-    // if it rejects, show error
-    ipcRenderer.send('init', newPassphrase)
-  }
-  get(id) {
-    // proxy to model.get
-    ipcRenderer.send('db-op', {
-      op: 'get',
-      payload: {
-        id
-      }
-    })
-  }
-  add(name, username, password) {
-    // proxy to model.add
-    ipcRenderer.send('db-op', {
-      op: 'add',
-      payload: {
-        name,
-        username,
-        password
-      }
-    })
-  }
-  remove(id) {
-    // proxy to model.remove
-    d(id)
-  }
-  update(id, name, username, password) {
-    // proxt to model.update
-    d(id, name, username, password)
+    this.requestInit(newPassphrase)
   }
   render() {
     return (
       <main>
-        <ErrorBar error={this.state.error.message} />
+        <ErrorBar error={this.state.error} />
         <Deets app={this.state.app} />
         <PassphraseModal shouldShow={!this.state.db} set={this.setPassphrase.bind(this)} />
         <section>
@@ -113,7 +81,7 @@ function Deets({ app }) {
 
 function ErrorBar({ error }) {
   if (error) {
-    return <p>{error}</p>
+    return <p>{error.message}</p>
   } else {
     return null
   }

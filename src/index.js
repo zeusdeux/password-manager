@@ -27,7 +27,7 @@ function createWindow() {
       db = await init(passphrase)
       event.sender.send('init-response', null)
     } catch (error) {
-      event.sender.send('init-response', { message: error.message })
+      event.sender.send('init-response', error)
     }
   })
 

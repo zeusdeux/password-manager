@@ -96,14 +96,17 @@ async function init(passphrase, dbPath = defaultDbPath) {
       remove: remove(db, commit)
     }
   } catch (e) {
+    let pseudoError = {
+      message: e.message
+    }
     /* eslint no-console: 0 */
     if (e.code === 'ENOENT' && e.syscall === 'stat') {
-      e.message = `No db found. Please create the file at ${defaultDbPath}`
+      pseudoError.message = `No db found. Please create the file at ${defaultDbPath}`
     } else if (e.cmd) {
-      e.message = 'Incorrect passphrase. Please try again'
+      pseudoError.message = 'Incorrect passphrase. Please try again'
     }
     console.error(e)
-    throw e
+    throw pseudoError
   }
 }
 
