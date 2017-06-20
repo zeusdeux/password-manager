@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron'
 import debug from 'debug'
+import { bind } from './util'
 
 const d = debug('views:db')
 
@@ -36,22 +37,27 @@ export default superClass => class Ipc extends superClass {
     // proxy to model.getAll
     this._requestDbOp('getAll')
   }
+  @bind
   get(id) {
     // proxy to model.get
     this._requestDbOp('get', { id })
   }
+  @bind
   add(name, username, password) {
     // proxy to model.add
     this._requestDbOp('add', { name, username, password })
   }
+  @bind
   remove(id) {
     // proxy to model.remove
     this._requestDbOp('remove', { id })
   }
+  @bind
   search(query) {
     // proxy to model.search
     this._requestDbOp('search', { query })
   }
+  @bind
   update(id, name, username, password) {
     // proxt to model.update
     this._requestDbOp('update', { id, name, username, password })

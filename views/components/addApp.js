@@ -5,8 +5,8 @@ export default class extends Component {
     super()
     this.state.show = false
   }
-  handleChange(key, e) {
-    this.setState({
+  linkState(key) {
+    return e => this.setState({
       [key]: e.target.value
     })
   }
@@ -29,14 +29,14 @@ export default class extends Component {
     this.props.add(this.state.appName, this.state.username, this.state.password)
     this.clearState()
   }
-  render() {
+  render(_, { show, appName, username, password }) {
     return (
       <section>
-        <div style={{display: this.state.show ? 'block' : 'none'}}>
+        <div style={{display: show ? 'block' : 'none'}}>
           <form onSubmit={this.handleSubmit.bind(this)}>
-            <input name='appName' placeholder='Enter app name' value={this.state.appName} onChange={this.handleChange.bind(this, 'appName')} />
-            <input name='username' placeholder='Enter app username' value={this.state.username} onChange={this.handleChange.bind(this, 'username')} />
-            <input name='password' placeholder='Enter app password' value={this.state.password} onChange={this.handleChange.bind(this, 'password')} />
+            <input name='appName' placeholder='Enter app name' value={appName} onInput={this.linkState('appName')} />
+            <input name='username' placeholder='Enter app username' value={username} onInput={this.linkState('username')} />
+            <input name='password' placeholder='Enter app password' value={password} onInput={this.linkState('password')} />
             <button type='submit'>Save</button>
           </form>
         </div>

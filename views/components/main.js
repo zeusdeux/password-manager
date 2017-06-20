@@ -3,6 +3,7 @@ import Header from './header'
 import Body from './body'
 import PassphraseModal from './passphraseModal'
 import mixinDbOps from './db'
+import { bind } from './util'
 
 export default class extends mixinDbOps(Component) {
   constructor() {
@@ -65,6 +66,13 @@ export default class extends mixinDbOps(Component) {
       this.setState(state)
     })
   }
+  @bind
+  closeApp() {
+    this.setState({
+      app: null
+    })
+  }
+  @bind
   setPassphrase(newPassphrase) {
     this.requestInit(newPassphrase)
   }
@@ -74,32 +82,48 @@ export default class extends mixinDbOps(Component) {
         <ErrorBar error={this.state.error} />
         <Deets
           app={this.state.app}
-          remove={this.remove.bind(this)}
-          update={this.update.bind(this)} />
-        <PassphraseModal shouldShow={!this.state.db} set={this.setPassphrase.bind(this)} />
+          remove={this.remove}
+          update={this.update}
+          closeApp={this.closeApp} />
+        <PassphraseModal shouldShow={!this.state.db} set={this.setPassphrase} />
         <section>
-          <Header db={this.state.db} search={this.search.bind(this)} />
+          <Header db={this.state.db} search={this.search} />
           <Body
             db={this.state.db}
-            get={this.get.bind(this)}
-            add={this.add.bind(this)} />
+            get={this.get}
+            add={this.add} />
         </section>
       </main>
     )
   }
 }
 
-function Deets({ app, update, remove }) {
-  if (app) {
-    return (
-      <div>
-        <p>{app.name},{app.username},{app.password}</p>
-        <p onClick={_ => update()}>update</p>
-        <p onClick={_ => remove(app.id)}>remove</p>
-      </div>
-    )
-  } else {
-    return null
+class Deets extends Component {
+  constructor({ app }) {
+    super()
+    this.state.app = app
+  }
+  componentWillReceiveProps({ app }) {
+    this.setState({ app })
+  }
+  handleUpdateClick() {
+
+  }
+  render({ remove, closeApp }, { app }) {
+    if (app) {
+      const { id, name, username, password } = app
+
+      return (
+        <div>
+          <p>{name},{username},{password}</p>
+          <p onClick={_ => this.handleUpdateClick()}>update</p>
+          <p onClick={_ => remove(id)}>remove</p>
+          <p onClick={closeApp}>Close</p>
+        </div>
+      )
+    } else {
+      return null
+    }
   }
 }
 
