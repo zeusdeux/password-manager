@@ -27,9 +27,10 @@ export default class extends Component {
   }
   @bind
   handleSubmit(e) {
-    e.preventDefault()
+    const { appName, username, password } = this.state
 
-    this.props.add(this.state.appName, this.state.username, this.state.password)
+    e.preventDefault()
+    this.props.add(appName, username, password)
     this.clearState()
   }
   render(_, { show, appName, username, password }) {
