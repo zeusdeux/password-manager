@@ -20,13 +20,14 @@
  */
 
 import { resolve } from 'path'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 
 export default {
   entry: './views/app.js',
   output: {
-    filename: 'app.bundle.js',
-    path: resolve(__dirname, './views/public/'),
-    publicPath: 'public/'
+    filename: 'app.[chunkhash].bundle.js',
+    path: resolve(__dirname, './views/public/')
   },
   module: {
     rules: [
@@ -37,10 +38,26 @@ export default {
       },
       {
         test: /\.css$/,
-        use: [ 'style-loader/url', 'file-loader' ]
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
       }
     ]
   },
+  plugins: [
+    new ExtractTextPlugin({
+      filename: 'app.[contenthash].css',
+      disable: false,
+      allChunks: true
+    }),
+    new HtmlWebpackPlugin({
+      template: 'views/index.template.html',
+      filename: 'index.html',
+      showErrors: true,
+      inject: true
+    })
+  ],
   devtool: 'inline-source-map',
   target: 'electron'
 }

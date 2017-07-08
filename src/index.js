@@ -9,10 +9,10 @@ let win
 function createWindow() {
   let db
 
-  win = new BrowserWindow({ width: 1024, height: 720, frame: false })
+  win = new BrowserWindow({ width: 1024, height: 720 })
 
   win.loadURL(format({
-    pathname: join(__dirname, '../views/index.html'),
+    pathname: join(__dirname, '../views/public/index.html'),
     protocol: 'file:',
     slashes: true
   }))
